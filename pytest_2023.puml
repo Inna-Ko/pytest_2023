@@ -1,0 +1,54 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package pages {
+
+    BasePage <|-- MainPage
+    BasePage <|-- LoginPage
+
+    abstract class BasePage {
+    _ _init_ _(self, browser, url, timeout=10)
+    open(self)
+    is_element_present(self, how, what)
+    }
+
+    class MainPage {
+    go_to_login_page(self)
+    should_be_login_link(self)
+    }
+
+    class LoginPage {
+    should_be_login_page(self)
+    should_be_login_url(self)
+    should_be_login_form(self)
+    should_be_register_form(self)
+    }
+
+    package locators {
+        class MainPageLocators {
+        LOGIN_LINK
+        }
+
+        class LoginPageLocators {
+        LOGIN_URL
+        LOGIN_FORM
+        REGISTER_FORM
+        }
+    }
+}
+
+package main {
+
+    interface conftest {
+    pytest_addoption(parser)
+    browser(request)
+    }
+
+    interface test_main_page {
+    test_guest_can_go_to_login_page(browser)
+    test_guest_should_see_login_link(browser)
+    }
+}
+
+
+@enduml
