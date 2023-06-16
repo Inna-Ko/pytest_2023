@@ -1,5 +1,7 @@
 @startuml
 'https://plantuml.com/class-diagram
+skinparam ranksep 250
+left to right direction
 
 package pages {
 
@@ -12,12 +14,12 @@ package pages {
     is_element_present(self, how, what)
     }
 
-    class MainPage {
+    class MainPage <main_page.py>{
     go_to_login_page(self)
     should_be_login_link(self)
     }
 
-    class LoginPage {
+    class LoginPage <<login_page.py>>{
     should_be_login_page(self)
     should_be_login_url(self)
     should_be_login_form(self)
@@ -39,16 +41,28 @@ package pages {
 
 package main {
 
-    interface conftest {
+    class conftest {
     pytest_addoption(parser)
     browser(request)
     }
 
-    interface test_main_page {
+    class test_main_page {
     test_guest_can_go_to_login_page(browser)
     test_guest_should_see_login_link(browser)
     }
 }
 
+hide conftest circle
+hide test_main_page circle
 
+test_main_page::test_guest_can_go_to_login_page -[dashed]- MainPage::go_to_login_page
+test_main_page::test_guest_can_go_to_login_page -[dashed]- LoginPage::should_be_login_page
+
+test_main_page::test_guest_should_see_login_link -[dashed]- MainPage::should_be_login_link
+
+'MainPage::should_be_login_link -[dashed]- BasePage::is_element_present
+'LoginPage::should_be_login_form -[dashed]- BasePage::is_element_present
+'LoginPage::should_be_register_form -[dashed]- BasePage::is_element_present
+
+test_main_page -[dashed]- conftest
 @enduml
